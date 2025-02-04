@@ -1,0 +1,27 @@
+﻿@model AutentificationTask.Models.LoginViewModel
+
+
+<h1>Login</h1>
+
+<a asp-action="Register" asp-controller="Account">Registration</a>
+
+<form asp-action="Login" asp-controller="Account" asp-antiforgery="true">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+        <div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Enter Email</label><br />
+            <input type="text" asp-for="Email" class="form-control" placeholder="Email" />
+                <span asp-validation-for="Email" />
+            </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Enter Password</label><br />
+            <input type="text" asp-for="Password" class="form-control" placeholder="Password" />
+                <span asp-validation-for="Password" />
+            </div>
+        <div class="mb-3">
+                <input type="submit" value="Login" class="form-control" style="background-color:cornflowerblue" />
+            </div>
+        </div>
+    
+
+</form>

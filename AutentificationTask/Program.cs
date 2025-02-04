@@ -8,10 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options=>
+    .AddCookie(options =>
     {
         options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-    })
+    });
 //important
 //var constring = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<UserContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
