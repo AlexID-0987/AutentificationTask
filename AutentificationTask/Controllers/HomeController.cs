@@ -1,9 +1,11 @@
 using AutentificationTask.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace AutentificationTask.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -12,12 +14,19 @@ namespace AutentificationTask.Controllers
         {
             _logger = logger;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            if(User.Identity.IsAuthenticated)
+            {
+                return Content(User.Identity.Name);
+            }
+            return Content("Not Authenticated!");
         }
-
+        public IActionResult About()
+        {
+            return Content("Authorized");
+        }
         public IActionResult Privacy()
         {
             return View();
