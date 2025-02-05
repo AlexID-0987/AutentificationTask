@@ -2,10 +2,11 @@ using AutentificationTask.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace AutentificationTask.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="admin, user")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -14,18 +15,17 @@ namespace AutentificationTask.Controllers
         {
             _logger = logger;
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "admin, user")]
         public IActionResult Index()
         {
-            if(User.Identity.IsAuthenticated)
-            {
-                return Content(User.Identity.Name);
-            }
-            return Content("Not Authenticated!");
+
+            string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            return Content($"your role is:{role}");
         }
+        [Authorize(Roles="admin")]
         public IActionResult About()
         {
-            return Content("Authorized");
+            return Content("Only for admin");
         }
         public IActionResult Privacy()
         {
