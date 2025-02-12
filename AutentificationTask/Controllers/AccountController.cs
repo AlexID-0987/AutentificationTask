@@ -42,6 +42,11 @@ namespace AutentificationTask.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> Myusers()
+        {
+            List<User> us = _userContext.Users.ToList();
+            return View(us);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerView)
@@ -56,6 +61,8 @@ namespace AutentificationTask.Controllers
 
                         user = new User { Email = registerView.Email, Password = registerView.Password };
                         Role userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+                        _userContext.Users.Add(user);
+                        _userContext.SaveChanges();
                         if(userRole!=null)
                         {
                             user.Role = userRole;
@@ -79,6 +86,7 @@ namespace AutentificationTask.Controllers
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
             };
+
             ClaimsIdentity id=new ClaimsIdentity(claims, "ApplicationCookis", ClaimsIdentity.DefaultNameClaimType,ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
             

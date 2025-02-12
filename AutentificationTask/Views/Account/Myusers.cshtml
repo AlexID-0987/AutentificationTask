@@ -1,0 +1,27 @@
+﻿@model IEnumerable<AutentificationTask.Models.User>
+
+    <h1>Deteils</h1>
+
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                </tr>
+            }
+        </tbody>
+        </table>
+    </div>

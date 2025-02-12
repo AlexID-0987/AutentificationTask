@@ -20,7 +20,8 @@ namespace AutentificationTask.Controllers
         {
 
             string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
-            return Content($"your role is:{role}");
+            //return Content($"your role is:{role}");
+            return View();
         }
         [Authorize(Roles="admin")]
         public IActionResult About()
