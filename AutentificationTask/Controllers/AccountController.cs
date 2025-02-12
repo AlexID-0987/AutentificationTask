@@ -27,10 +27,10 @@ namespace AutentificationTask.Controllers
         {
             if(ModelState.IsValid)
             {
-                User user = _userContext.Users.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
+                User user = await _userContext.Users.Include(u=>u.Role).FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
                 if(user!=null)
                 {
-                    await Authentificate(model.Email);
+                    await Authentificate(user);
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(" ", "Incorrect login and(or) password");
@@ -52,9 +52,16 @@ namespace AutentificationTask.Controllers
                 {
                     if (user==null)
                     {
-                        _userContext.Add(new User { Email= registerView.Email, Password=registerView.Password});
+                        //_userContext.Add(new User { Email= registerView.Email, Password=registerView.Password});
+
+                        user = new User { Email = registerView.Email, Password = registerView.Password };
+                        Role userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+                        if(userRole!=null)
+                        {
+                            user.Role = userRole;
+                        }
                         await _userContext.SaveChangesAsync();
-                        await Authentificate(registerView.Email);
+                        await Authentificate(user);
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -65,11 +72,12 @@ namespace AutentificationTask.Controllers
             }
                 return View(registerView);
         }
-        private async Task Authentificate(string userName)
+        private async Task Authentificate(User user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
             };
             ClaimsIdentity id=new ClaimsIdentity(claims, "ApplicationCookis", ClaimsIdentity.DefaultNameClaimType,ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
